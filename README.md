@@ -1,13 +1,13 @@
 # topjava 20 graduation project
 project hasn't finnished, but work with all tasks.\
-for current moment doesn't work validation, cache and there is classes for testing
-##Authentication
+for current moment doesn't work validation, cache
+## Authentication
 there are 1 admin and 11 ordinary hardcoded users\
 Admin  -  admin\
 User - password\
 User[1-10] - password
-##Main
-###Restaurants
+## Main
+### Restaurants
 Admin can create, update and delete restaurants\
 create:\
 POST /rest/admin/restaurant\
@@ -39,7 +39,7 @@ get all:\
 GET /rest/restaurant\
 get all with menu:\
 GET /rest/restaurant/with-menu\
-###Menu
+### Menu
 Admin can create and delete today's menu food\
 create:\
 POST /rest/admin/restaurant/{restaurant-id}/food/\
@@ -51,12 +51,12 @@ delete:\
 DELETE /rest/admin/restaurant/food/{id}\
 **example**\
 DELETE /rest/admin/restaurant/food/100045\
-###Vote
+### Vote
 users can vote for preferred restaurnt\
 POST /rest/restaurant/{restaurant-id}/vote/\
 **example**\
 POST /rest/restaurant/100012/vote/\
-##Testing
+## Testing
 For testing current date and time gets from util's class DateTimeUtil where you can 
 set LocalDateTime mockDateTime parameter and boolean useRealTime parameter\
 Also there is an ability to get votes,food and menu by admin\
@@ -66,3 +66,5 @@ Menu\
 GET /rest/admin/menus\
 User\
 GET /rest/admin/users
+## Update
+Exception handling

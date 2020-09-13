@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import studio.akim.restaurantvoting.model.Restaurant;
 import studio.akim.restaurantvoting.model.Vote;
 import studio.akim.restaurantvoting.repository.RestaurantRepository;
@@ -27,7 +28,7 @@ public class RestaurantRestController {
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not found restaurant with id " + id));
     }
 
 
@@ -38,7 +39,7 @@ public class RestaurantRestController {
 
     @GetMapping("/{id}/with-menu")
     public Restaurant getWithTodaysFood(@PathVariable int id) {
-        return repository.getWithDaysFood(id, DateTimeUtil.currentDate());
+        return repository.getWithDaysFood(id, DateTimeUtil.currentDate()).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not found restaurant with id " + id));
     }
 
     @GetMapping("/with-menu")
@@ -56,6 +57,8 @@ public class RestaurantRestController {
         } else if (DateTimeUtil.userCanChangeVote()) {
             vote.setId(curVote.id());
             voteRepository.save(vote);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "you can't vote again afer 11:00");
         }
     }
 }

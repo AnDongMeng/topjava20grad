@@ -19,6 +19,7 @@ public class RestaurantTestData {
 //                throw new UnsupportedOperationException();
             });
 
+    public static final int WRONG_ID = 999;
 
     public static final int RSTRNT1_ID = AbstractBaseEntity.START_SEQ + 12;
     public static final int RSTRNT2_ID = AbstractBaseEntity.START_SEQ + 13;

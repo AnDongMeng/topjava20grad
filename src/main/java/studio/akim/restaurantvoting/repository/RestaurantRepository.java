@@ -10,13 +10,14 @@ import studio.akim.restaurantvoting.model.Restaurant;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
 
     @EntityGraph(attributePaths = {"todaysFood"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("SELECT r FROM Restaurant r LEFT JOIN r.todaysFood f ON f.date = ?2 WHERE r.id = ?1 ")
-    Restaurant getWithDaysFood(int id, LocalDate date);
+    Optional<Restaurant> getWithDaysFood(int id, LocalDate date);
 
 
     @EntityGraph(attributePaths = {"todaysFood"}, type = EntityGraph.EntityGraphType.LOAD)

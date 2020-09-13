@@ -1,10 +1,13 @@
 package studio.akim.restaurantvoting.web.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import studio.akim.restaurantvoting.model.Food;
 import studio.akim.restaurantvoting.model.Restaurant;
@@ -29,7 +32,12 @@ public class AdminRestaurantRestController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> save(@RequestBody Restaurant restaurant) {
-        Restaurant created = repository.save(restaurant);
+        Restaurant created = null;
+        try {
+            created = repository.save(restaurant);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Restaurant is not unique");
+        }
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -40,16 +48,22 @@ public class AdminRestaurantRestController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> update(@RequestBody Restaurant restaurant) {
-        repository.save(restaurant);
-
-
+        try {
+            repository.save(restaurant);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Restaurant is not unique");
+        }
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        repository.delete(id);
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not found restaurant with id " + id);
+        }
     }
 
     @PostMapping(value = "/{restaurant_id}/food", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -57,10 +71,13 @@ public class AdminRestaurantRestController {
         Restaurant restaurant = repository.findById(restaurant_id).orElse(null);
         food.setRestaurant(restaurant);
         food.setDate(LocalDate.now());
-        Food created = foodRepository.save(food);
-
+        Food created;
+        try {
+            created = foodRepository.save(food);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Food is not unique");
+        }
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
 
         return ResponseEntity.created(uriOfNewResource).body(created);
@@ -69,7 +86,11 @@ public class AdminRestaurantRestController {
     @DeleteMapping("/food/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteFood(@PathVariable int id) {
-        foodRepository.delete(id);
+        try {
+            foodRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not found food with id " + id);
+        }
     }
 
     @Autowired

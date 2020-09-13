@@ -59,4 +59,8 @@ public class FoodTestData {
     public static Food getNew() {
         return new Food(null, RSTRNT1, DateTimeUtil.currentDate(), "new", 100);
     }
+
+    public static Food getNewWrong() {
+        return new Food(null, RSTRNT1, DateTimeUtil.currentDate(), "new", 100);
+    }
 }

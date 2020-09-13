@@ -14,6 +14,7 @@ import studio.akim.restaurantvoting.repository.RestaurantRepository;
 import studio.akim.restaurantvoting.web.json.JsonUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static studio.akim.restaurantvoting.TestData.FoodTestData.*;
 import static studio.akim.restaurantvoting.TestData.RestaurantTestData.*;
@@ -61,11 +62,22 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
+        assertThat(restaurantRepository.findById(RSTRNT1_ID).orElse(null)).isNotNull();
         perform(MockMvcRequestBuilders.delete(REST_URL + RSTRNT1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN)))
+                .andDo(print())
                 .andExpect(status().isNoContent());
 
         assertThat(restaurantRepository.findById(RSTRNT1_ID).orElse(null)).isNull();
+    }
+
+    @Test
+    void deleteNotExisted() throws Exception {
+        assertThat(restaurantRepository.findById(WRONG_ID).orElse(null)).isNull();
+        perform(MockMvcRequestBuilders.delete(REST_URL + WRONG_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -93,10 +105,19 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
 
     @Test
     void deleteFood() throws Exception {
+        assertThat(foodRepository.findById(RSTRNT1_TODAY_FOOD_ID1).orElse(null)).isNotNull();
         perform(MockMvcRequestBuilders.delete(REST_URL + "food/" + RSTRNT1_TODAY_FOOD_ID1).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
         assertThat(foodRepository.findById(RSTRNT1_TODAY_FOOD_ID1).orElse(null)).isNull();
+    }
+
+    @Test
+    void deleteNotExistedFood() throws Exception {
+        assertThat(foodRepository.findById(WRONG_ID).orElse(null)).isNull();
+        perform(MockMvcRequestBuilders.delete(REST_URL + "food/" + 9).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN)))
+                .andExpect(status().isUnprocessableEntity());
     }
 }
