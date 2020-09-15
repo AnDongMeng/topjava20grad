@@ -1,13 +1,11 @@
 package studio.akim.restaurantvoting.model;
 
-import studio.akim.restaurantvoting.HasId;
-
 import javax.persistence.*;
 
 @MappedSuperclass
 // http://stackoverflow.com/questions/594597/hibernate-annotations-which-is-better-field-or-property-access
 @Access(AccessType.FIELD)
-public abstract class AbstractBaseEntity implements HasId {
+public abstract class AbstractBaseEntity {
     public static final int START_SEQ = 100000;
 
     @Id

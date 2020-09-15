@@ -43,10 +43,21 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated());
 
         Restaurant created = readFromJson(action, Restaurant.class);
-        int newId = created.id();
+        int newId = created.getId();
         newRestaurant.setId(newId);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
         RESTAURANT_MATCHER.assertMatch(restaurantRepository.findById(newId).orElse(null), newRestaurant);
+    }
+
+    @Test
+    void putRestaurantNotValid() throws Exception {
+        Restaurant newRestaurant = RestaurantTestData.getNewNotValid();
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(ADMIN))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newRestaurant)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
@@ -57,7 +68,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        RESTAURANT_MATCHER.assertMatch(restaurantRepository.findById(getUpdated().id()).orElse(null), updated);
+        RESTAURANT_MATCHER.assertMatch(restaurantRepository.findById(getUpdated().getId()).orElse(null), updated);
     }
 
     @Test
@@ -84,6 +95,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     void checkAuth() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + RSTRNT1_ID).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(USER)))
+                .andDo(print())
                 .andExpect(status().isForbidden());
     }
 
@@ -97,7 +109,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated());
 
         Food created = readFromJson(action, Food.class);
-        int newId = created.id();
+        int newId = created.getId();
         newFood.setId(newId);
         FOOD_MATCHER_WITHOUT_RESTAURANT.assertMatch(created, newFood);
         FOOD_MATCHER.assertMatch(foodRepository.getWithRestaurant(newId), newFood);

@@ -62,6 +62,10 @@ public class RestaurantTestData {
         return new Restaurant(null, "new");
     }
 
+    public static Restaurant getNewNotValid() {
+        return new Restaurant(null, "n");
+    }
+
     public static Restaurant getUpdated() {
         return new Restaurant(RSTRNT1_ID, "Edited");
     }

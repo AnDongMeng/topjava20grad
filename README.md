@@ -1,6 +1,6 @@
 # topjava 20 graduation project
 project hasn't finnished, but work with all tasks.\
-for current moment doesn't work validation, cache
+for current moment doesn't added  cache
 ## Authentication
 there are 1 admin and 11 ordinary hardcoded users\
 Admin  -  admin\
@@ -23,16 +23,12 @@ PUT /rest/admin/restaurant\
  }
 delete:\
 DELETE /rest/admin/restaurant/{id}\
-**example**\
-DELETE /rest/admin/restaurant/100012\
 
 Authenticated users can get restaurants
 get:\
 GET /rest/restaurant/{id}\
 get with menu:\
 GET /rest/restaurant/{id}/with-menu\
-**example**\
-GET /rest/restaurant/100012\
 GET /rest/restaurant/100012/with-menu\
 
 get all:\
@@ -49,13 +45,9 @@ POST /rest/admin/restaurant/{restaurant-id}/food/\
  }
 delete:\
 DELETE /rest/admin/restaurant/food/{id}\
-**example**\
-DELETE /rest/admin/restaurant/food/100045\
 ### Vote
 users can vote for preferred restaurnt\
 POST /rest/restaurant/{restaurant-id}/vote/\
-**example**\
-POST /rest/restaurant/100012/vote/\
 ## Testing
 For testing current date and time gets from util's class DateTimeUtil where you can 
 set LocalDateTime mockDateTime parameter and boolean useRealTime parameter\
@@ -67,4 +59,5 @@ GET /rest/admin/menus\
 User\
 GET /rest/admin/users
 ## Update
-Exception handling
+Exception handling added\
+validation and curl examples added

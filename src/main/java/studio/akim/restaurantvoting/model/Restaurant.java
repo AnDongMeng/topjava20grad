@@ -11,8 +11,8 @@ import java.util.List;
 @Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "restaurants_unique_name_idx")})
 public class Restaurant extends AbstractBaseEntity {
 
-    @NotBlank
-    @Size(min = 2, max = 100)
+    @NotBlank(message = "name must not be empty")
+    @Size(min = 2, max = 100, message = "name length must be between 2 and 100")
     @Column(name = "name", nullable = false)
     private String name;
 

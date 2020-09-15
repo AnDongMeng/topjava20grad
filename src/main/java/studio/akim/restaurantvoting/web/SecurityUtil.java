@@ -12,7 +12,6 @@ public class SecurityUtil {
     }
 
     public static AuthorizedUser safeGet() {
-//        return new User(100001, "User", "password");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             return null;
@@ -26,6 +25,6 @@ public class SecurityUtil {
     }
 
     public static int authUserId() {
-        return get().getUser().id();
+        return get().getUser().getId();
     }
 }

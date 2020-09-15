@@ -3,10 +3,11 @@ package studio.akim.restaurantvoting.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
@@ -19,14 +20,15 @@ public class Food extends AbstractBaseEntity {
     private Restaurant restaurant;
 
     @Column(name = "date", nullable = false)
-    @NotNull
     private LocalDate date;
 
     @Column(name = "name", nullable = false)
-    @NotBlank
+    @NotBlank(message = "name must not be empty")
+    @Size(min = 3, max = 100, message = "name length must be between 2 and 100")
     private String name;
 
-    @Column(name = "price", precision = 10, scale = 2)
+    @Column(name = "price")
+    @Range(min = 1, max = 1_000_000, message = "price must be between 1 and 1 000 000")
     private int price;
 
     public Food() {

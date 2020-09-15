@@ -4,12 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import studio.akim.restaurantvoting.model.Restaurant;
 import studio.akim.restaurantvoting.model.Vote;
 import studio.akim.restaurantvoting.repository.RestaurantRepository;
 import studio.akim.restaurantvoting.repository.VoteRepository;
 import studio.akim.restaurantvoting.util.DateTimeUtil;
+import studio.akim.restaurantvoting.util.ValidationUtil;
+import studio.akim.restaurantvoting.util.exception.LateVotingException;
 import studio.akim.restaurantvoting.web.SecurityUtil;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class RestaurantRestController {
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not found restaurant with id " + id));
+        return ValidationUtil.checkNotFoundWithId(repository.findById(id).orElse(null), id);
     }
 
 
@@ -39,7 +40,7 @@ public class RestaurantRestController {
 
     @GetMapping("/{id}/with-menu")
     public Restaurant getWithTodaysFood(@PathVariable int id) {
-        return repository.getWithDaysFood(id, DateTimeUtil.currentDate()).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not found restaurant with id " + id));
+        return ValidationUtil.checkNotFoundWithId(repository.getWithDaysFood(id, DateTimeUtil.currentDate()), id);
     }
 
     @GetMapping("/with-menu")
@@ -55,10 +56,10 @@ public class RestaurantRestController {
         if (curVote == null) {
             voteRepository.save(vote);
         } else if (DateTimeUtil.userCanChangeVote()) {
-            vote.setId(curVote.id());
+            vote.setId(curVote.getId());
             voteRepository.save(vote);
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "you can't vote again afer 11:00");
+            throw new LateVotingException();
         }
     }
 }

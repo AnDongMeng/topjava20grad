@@ -2,7 +2,6 @@ package studio.akim.restaurantvoting.web.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,9 @@ import studio.akim.restaurantvoting.model.Food;
 import studio.akim.restaurantvoting.model.Restaurant;
 import studio.akim.restaurantvoting.repository.FoodRepository;
 import studio.akim.restaurantvoting.repository.RestaurantRepository;
-import studio.akim.restaurantvoting.repository.VoteRepository;
+import studio.akim.restaurantvoting.util.ValidationUtil;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 
@@ -31,13 +31,9 @@ public class AdminRestaurantRestController {
     private FoodRepository foodRepository;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> save(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> save(@Valid @RequestBody Restaurant restaurant) {
         Restaurant created = null;
-        try {
-            created = repository.save(restaurant);
-        } catch (DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Restaurant is not unique");
-        }
+        created = repository.save(restaurant);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -47,27 +43,20 @@ public class AdminRestaurantRestController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> update(@RequestBody Restaurant restaurant) {
-        try {
-            repository.save(restaurant);
-        } catch (DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Restaurant is not unique");
-        }
+    public ResponseEntity<Restaurant> update(@Valid @RequestBody Restaurant restaurant) {
+
+        repository.save(restaurant);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        try {
-            repository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not found restaurant with id " + id);
-        }
+        ValidationUtil.checkNotFoundWithId(repository.delete(id) != 0, id);
     }
 
     @PostMapping(value = "/{restaurant_id}/food", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Food> saveFood(@PathVariable int restaurant_id, @RequestBody Food food) {
+    public ResponseEntity<Food> saveFood(@PathVariable int restaurant_id, @Valid @RequestBody Food food) {
         Restaurant restaurant = repository.findById(restaurant_id).orElse(null);
         food.setRestaurant(restaurant);
         food.setDate(LocalDate.now());
@@ -86,14 +75,7 @@ public class AdminRestaurantRestController {
     @DeleteMapping("/food/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteFood(@PathVariable int id) {
-        try {
-            foodRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Not found food with id " + id);
-        }
+        ValidationUtil.checkNotFoundWithId(foodRepository.delete(id) != 0, id);
     }
-
-    @Autowired
-    private VoteRepository voteRepository;
 
 }
