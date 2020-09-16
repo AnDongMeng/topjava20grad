@@ -1,6 +1,8 @@
 # topjava 20 graduation project
 project hasn't finnished, but work with all tasks.\
 for current moment doesn't added  cache
+## Run
+mvn clean package -DskipTests=true org.codehaus.cargo:cargo-maven2-plugin:1.7.10:run
 ## Authentication
 there are 1 admin and 11 ordinary hardcoded users\
 Admin  -  admin\
