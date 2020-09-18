@@ -32,8 +32,8 @@
 ### vote for already voted user for restaurant 100013
 `curl -s -X POST http://localhost:8080/restaurantvoting/rest/restaurants/100013/vote --user User7:password`
 ### get all Votes
-`curl -s http://localhost:8080/restaurantvoting/rest/admin/votes --user Admin:admin`
+`curl -s http://localhost:8080/restaurantvoting/rest/admin/data/votes --user Admin:admin`
 ### get all Food
-`curl -s http://localhost:8080/restaurantvoting/rest/admin/menus --user Admin:admin`
+`curl -s http://localhost:8080/restaurantvoting/rest/admin/data/menus --user Admin:admin`
 ### get all Users
-`curl -s http://localhost:8080/restaurantvoting/rest/admin/users --user Admin:admin`
+`curl -s http://localhost:8080/restaurantvoting/rest/admin/data/users --user Admin:admin`
