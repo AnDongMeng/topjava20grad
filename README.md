@@ -53,11 +53,11 @@ For testing current date and time gets from util's class DateTimeUtil where you 
 set LocalDateTime mockDateTime parameter and boolean useRealTime parameter\
 Also there is an ability to get votes,food and menu by admin\
 Votes\
-GET /rest/admin/votes\
+GET /rest/admin/data/votes\
 Menu\
-GET /rest/admin/menus\
+GET /rest/admin/data/menus\
 User\
-GET /rest/admin/users
+GET /rest/admin/data/users
 ## Update
 Exception handling added\
 validation and curl examples added
