@@ -10,6 +10,6 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 public interface VoteRepository extends JpaRepository<Vote, Integer> {
 
-    @Query("SELECT v FROM Vote v WHERE v.user.id = ?1 AND v.date = ?2")
+    @Query("SELECT v FROM Vote v JOIN FETCH v.restaurant JOIN FETCH v.user WHERE v.user.id = ?1 AND v.date = ?2")
     Vote getVoteByUserAndDate(int userId, LocalDate date);
 }

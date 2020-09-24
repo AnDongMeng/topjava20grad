@@ -19,9 +19,14 @@ public class Restaurant extends AbstractBaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("date DESC")
     @JsonManagedReference
-    private List<Food> todaysFood;
+    private List<Food> menu;
 
     public Restaurant() {
+
+    }
+
+    public Restaurant(Integer id) {
+        super(id);
 
     }
 
@@ -30,12 +35,12 @@ public class Restaurant extends AbstractBaseEntity {
         this.name = name;
     }
 
-    public List<Food> getTodaysFood() {
-        return todaysFood;
+    public List<Food> getMenu() {
+        return menu;
     }
 
-    public void setTodaysFood(List<Food> todaysFood) {
-        this.todaysFood = todaysFood;
+    public void setMenu(List<Food> todaysFood) {
+        this.menu = todaysFood;
     }
 
     public String getName() {
@@ -51,7 +56,6 @@ public class Restaurant extends AbstractBaseEntity {
         return "Restaurant{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", food='" + todaysFood + '\'' +
                 '}';
     }
 

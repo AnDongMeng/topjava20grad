@@ -10,12 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static studio.akim.restaurantvoting.TestData.FoodTestData.*;
 
 public class RestaurantTestData {
-    public static TestMatcher<Restaurant> RESTAURANT_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Restaurant.class, "todaysFood");
+    public static TestMatcher<Restaurant> RESTAURANT_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(Restaurant.class, "menu");
     public static TestMatcher<Restaurant> RESTAURANT_WITH_FOOD_MATCHER = TestMatcher.usingAssertions(Restaurant.class,
             (a, e) -> assertThat(a).usingRecursiveComparison()
-                    .ignoringFields("todaysFood.restaurant").ignoringAllOverriddenEquals().isEqualTo(e),
+                    .ignoringFields("menu.restaurant").ignoringAllOverriddenEquals().isEqualTo(e),
             (a, e) -> {
-                assertThat(a).usingElementComparatorIgnoringFields("todaysFood").isEqualTo(e);
+                assertThat(a).usingElementComparatorIgnoringFields("menu").isEqualTo(e);
 //                throw new UnsupportedOperationException();
             });
 
@@ -49,13 +49,13 @@ public class RestaurantTestData {
 //    public static final List<Restaurant> RESTAURANTS = List.of(RSTRNT11,RSTRNT10,RSTRNT9,RSTRNT8,RSTRNT7,RSTRNT6,RSTRNT5,RSTRNT4,RSTRNT3,RSTRNT2,RSTRNT1);
 
     static {
-        RSTRNT1.setTodaysFood(List.of(RSTRNT1_TODAY_FOOD1, RSTRNT1_TODAY_FOOD2));
-        RSTRNT2.setTodaysFood(List.of(RSTRNT2_TODAY_FOOD1, RSTRNT2_TODAY_FOOD2));
-        RSTRNT3.setTodaysFood(List.of(RSTRNT3_TODAY_FOOD1, RSTRNT3_TODAY_FOOD2));
-        RSTRNT4.setTodaysFood(List.of(RSTRNT4_TODAY_FOOD1, RSTRNT4_TODAY_FOOD2));
-        RSTRNT5.setTodaysFood(List.of(RSTRNT5_TODAY_FOOD1, RSTRNT5_TODAY_FOOD2));
-        RSTRNT6.setTodaysFood(List.of(RSTRNT6_TODAY_FOOD1, RSTRNT6_TODAY_FOOD2, RSTRNT6_TODAY_FOOD3, RSTRNT6_TODAY_FOOD4, RSTRNT6_TODAY_FOOD5));
-        RSTRNT7.setTodaysFood(List.of(RSTRNT7_TODAY_FOOD1, RSTRNT7_TODAY_FOOD2));
+        RSTRNT1.setMenu(List.of(RSTRNT1_TODAY_FOOD1, RSTRNT1_TODAY_FOOD2));
+        RSTRNT2.setMenu(List.of(RSTRNT2_TODAY_FOOD1, RSTRNT2_TODAY_FOOD2));
+        RSTRNT3.setMenu(List.of(RSTRNT3_TODAY_FOOD1, RSTRNT3_TODAY_FOOD2));
+        RSTRNT4.setMenu(List.of(RSTRNT4_TODAY_FOOD1, RSTRNT4_TODAY_FOOD2));
+        RSTRNT5.setMenu(List.of(RSTRNT5_TODAY_FOOD1, RSTRNT5_TODAY_FOOD2));
+        RSTRNT6.setMenu(List.of(RSTRNT6_TODAY_FOOD1, RSTRNT6_TODAY_FOOD2, RSTRNT6_TODAY_FOOD3, RSTRNT6_TODAY_FOOD4, RSTRNT6_TODAY_FOOD5));
+        RSTRNT7.setMenu(List.of(RSTRNT7_TODAY_FOOD1, RSTRNT7_TODAY_FOOD2));
     }
 
     public static Restaurant getNew() {

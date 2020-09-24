@@ -23,9 +23,9 @@ import static studio.akim.restaurantvoting.TestData.UserTestData.USER;
 import static studio.akim.restaurantvoting.TestUtil.readFromJson;
 import static studio.akim.restaurantvoting.TestUtil.userHttpBasic;
 
-class AdminRestaurantRestControllerTest extends AbstractControllerTest {
+class AdminRestControllerTest extends AbstractControllerTest {
 
-    private static final String REST_URL = AdminRestaurantRestController.REST_URL + '/';
+    private static final String REST_URL = AdminRestController.REST_URL + '/';
 
     @Autowired
     private FoodRepository foodRepository;
@@ -63,7 +63,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void update() throws Exception {
         Restaurant updated = RestaurantTestData.getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+        perform(MockMvcRequestBuilders.put(REST_URL + updated.getId()).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
@@ -112,13 +112,13 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
         int newId = created.getId();
         newFood.setId(newId);
         FOOD_MATCHER_WITHOUT_RESTAURANT.assertMatch(created, newFood);
-        FOOD_MATCHER.assertMatch(foodRepository.getWithRestaurant(newId), newFood);
+        FOOD_MATCHER.assertMatch(foodRepository.getWithRestaurant(newId).orElse(null), newFood);
     }
 
     @Test
     void deleteFood() throws Exception {
         assertThat(foodRepository.findById(RSTRNT1_TODAY_FOOD_ID1).orElse(null)).isNotNull();
-        perform(MockMvcRequestBuilders.delete(REST_URL + "food/" + RSTRNT1_TODAY_FOOD_ID1).contentType(MediaType.APPLICATION_JSON)
+        perform(MockMvcRequestBuilders.delete(REST_URL + RSTRNT1_ID + "/food/" + RSTRNT1_TODAY_FOOD_ID1).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
@@ -128,7 +128,7 @@ class AdminRestaurantRestControllerTest extends AbstractControllerTest {
     @Test
     void deleteNotExistedFood() throws Exception {
         assertThat(foodRepository.findById(WRONG_ID).orElse(null)).isNull();
-        perform(MockMvcRequestBuilders.delete(REST_URL + "food/" + 9).contentType(MediaType.APPLICATION_JSON)
+        perform(MockMvcRequestBuilders.delete(REST_URL + RSTRNT4_ID + "/food/" + RSTRNT6_TODAY_FOOD_ID1).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isUnprocessableEntity());
     }

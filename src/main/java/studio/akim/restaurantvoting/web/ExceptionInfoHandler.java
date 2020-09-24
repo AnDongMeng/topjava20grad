@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import studio.akim.restaurantvoting.util.ErrorInfo;
 import studio.akim.restaurantvoting.util.ErrorType;
 import studio.akim.restaurantvoting.util.ValidationUtil;
-import studio.akim.restaurantvoting.util.exception.LateVotingException;
 import studio.akim.restaurantvoting.util.exception.NotFoundException;
+import studio.akim.restaurantvoting.util.exception.VotingException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,9 +49,9 @@ public class ExceptionInfoHandler {
     }
 
     @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
-    @ExceptionHandler(LateVotingException.class)
+    @ExceptionHandler(VotingException.class)
     public ErrorInfo LateVoteError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, false, NOT_ACCEPTABLE, "you can't vote again afer 11:00");
+        return logAndGetErrorInfo(req, e, false, NOT_ACCEPTABLE, e.getMessage());
     }
 
     @ResponseStatus(value = HttpStatus.CONFLICT)  // 409

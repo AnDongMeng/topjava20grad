@@ -16,9 +16,9 @@ import static studio.akim.restaurantvoting.TestData.UserTestData.*;
 import static studio.akim.restaurantvoting.TestData.VoteTestData.*;
 import static studio.akim.restaurantvoting.TestUtil.userHttpBasic;
 
-class RestaurantRestControllerTest extends AbstractControllerTest {
+class UserRestControllerTest extends AbstractControllerTest {
 
-    private static final String REST_URL = RestaurantRestController.REST_URL + '/';
+    private static final String REST_URL = UserRestController.REST_URL + '/';
 
     @Autowired
     private VoteRepository voteRepository;
@@ -85,30 +85,31 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
         assertThat(voteRepository.getVoteByUserAndDate(USER_ID, DateTimeUtil.currentDate())).isNull();
         perform(MockMvcRequestBuilders.post(REST_URL + RSTRNT4_ID + "/vote")
                 .with(userHttpBasic(USER)))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isCreated())
                 .andDo(print());
         assertThat(voteRepository.getVoteByUserAndDate(USER_ID, DateTimeUtil.currentDate())).isEqualToIgnoringGivenFields(VOTE_TODAY, "id");
     }
 
 
     @Test
-    void voteAgain() throws Exception {
+    void revoteBefore11() throws Exception {
         DateTimeUtil.setMockDateTime(testDateTimeBefore11);
         DateTimeUtil.setUseRealTime(false);
         assertThat(voteRepository.getVoteByUserAndDate(USER_ID, DateTimeUtil.currentDate())).isEqualToIgnoringGivenFields(VOTE_BASE, "id");
-        perform(MockMvcRequestBuilders.post(REST_URL + RSTRNT4_ID + "/vote")
+        perform(MockMvcRequestBuilders.put(REST_URL + RSTRNT4_ID + "/vote")
                 .with(userHttpBasic(USER)))
                 .andExpect(status().isNoContent())
                 .andDo(print());
         assertThat(voteRepository.getVoteByUserAndDate(USER_ID, DateTimeUtil.currentDate())).isEqualToIgnoringGivenFields(VOTE1, "id");
     }
 
+
     @Test
-    void voteAfter11() throws Exception {
+    void revoteAfter11() throws Exception {
         DateTimeUtil.setMockDateTime(testDateTimeAfter11);
         DateTimeUtil.setUseRealTime(false);
         assertThat(voteRepository.getVoteByUserAndDate(USER_ID, DateTimeUtil.currentDate())).isEqualToIgnoringGivenFields(VOTE_BASE, "id");
-        perform(MockMvcRequestBuilders.post(REST_URL + RSTRNT4_ID + "/vote")
+        perform(MockMvcRequestBuilders.put(REST_URL + RSTRNT4_ID + "/vote")
                 .with(userHttpBasic(USER)))
                 .andDo(print())
                 .andExpect(status().isNotAcceptable());
@@ -122,7 +123,7 @@ class RestaurantRestControllerTest extends AbstractControllerTest {
         assertThat(voteRepository.getVoteByUserAndDate(USER_ID1, DateTimeUtil.currentDate())).isNull();
         perform(MockMvcRequestBuilders.post(REST_URL + RSTRNT4_ID + "/vote")
                 .with(userHttpBasic(USER1)))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isCreated())
                 .andDo(print());
         VOTE_MATCHER.assertMatch(voteRepository.getVoteByUserAndDate(USER_ID1, DateTimeUtil.currentDate()), VOTE2);
     }

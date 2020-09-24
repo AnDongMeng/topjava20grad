@@ -14,14 +14,14 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
 
-    @EntityGraph(attributePaths = {"todaysFood"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT r FROM Restaurant r LEFT JOIN r.todaysFood f ON f.date = ?2 WHERE r.id = ?1 ")
-    Restaurant getWithDaysFood(int id, LocalDate date);
+    @EntityGraph(attributePaths = {"menu"}, type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT r FROM Restaurant r LEFT JOIN r.menu f WHERE f.date = ?2 and r.id = ?1 ")
+    Restaurant getWithDaysMenu(int id, LocalDate date);
 
 
-    @EntityGraph(attributePaths = {"todaysFood"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT r FROM Restaurant r LEFT JOIN r.todaysFood f  ON f.date = ?1 ORDER BY r.id")
-    List<Restaurant> getAllWithDaysFood(LocalDate date);
+    @EntityGraph(attributePaths = {"menu"}, type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT r FROM Restaurant r LEFT JOIN r.menu f  ON f.date = ?1 ORDER BY r.id")
+    List<Restaurant> getAllWithDaysMenu(LocalDate date);
 
     @Modifying
     @Transactional
