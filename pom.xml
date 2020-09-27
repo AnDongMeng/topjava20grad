@@ -26,7 +26,7 @@
 
 
         <!--Tools-->
-<!--        <ehcache.version>3.8.1</ehcache.version>-->
+        <ehcache.version>3.8.1</ehcache.version>
         <!-- Logging -->
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -147,11 +147,11 @@
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate</groupId>-->
-<!--            <artifactId>hibernate-jcache</artifactId>-->
-<!--            <version>${hibernate.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
 
         <!--http://hibernate.org/validator/documentation/getting-started/#unified-expression-language-el-->
         <dependency>
@@ -180,18 +180,18 @@
             <artifactId>spring-webmvc</artifactId>
         </dependency>
 
-<!--        &lt;!&ndash; Cache &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>javax.cache</groupId>-->
-<!--            <artifactId>cache-api</artifactId>-->
-<!--            <version>1.1.0</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.ehcache</groupId>-->
-<!--            <artifactId>ehcache</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--            <version>${ehcache.version}</version>-->
-<!--        </dependency>-->
+        <!-- Cache -->
+        <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <scope>runtime</scope>
+            <version>${ehcache.version}</version>
+        </dependency>
 
         <!--JSON-->
         <dependency>

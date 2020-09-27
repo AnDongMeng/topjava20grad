@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import studio.akim.restaurantvoting.model.Food;
 import studio.akim.restaurantvoting.model.Restaurant;
-import studio.akim.restaurantvoting.repository.FoodRepository;
-import studio.akim.restaurantvoting.repository.RestaurantRepository;
+import studio.akim.restaurantvoting.service.DataService;
 
 import javax.validation.Valid;
 import java.net.URI;
 
-import static studio.akim.restaurantvoting.util.ValidationUtil.*;
+import static studio.akim.restaurantvoting.util.ValidationUtil.assureIdConsistent;
+import static studio.akim.restaurantvoting.util.ValidationUtil.checkNew;
 
 @RestController
 @RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,15 +24,12 @@ public class AdminRestController {
     static final String REST_URL = "/rest/admin/restaurants";
 
     @Autowired
-    private RestaurantRepository restaurantRepository;
-
-    @Autowired
-    private FoodRepository foodRepository;
+    private DataService dataService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> save(@Valid @RequestBody Restaurant restaurant) {
         checkNew(restaurant);
-        Restaurant created = restaurantRepository.save(restaurant);
+        Restaurant created = dataService.createRestaurant(restaurant);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -44,24 +41,22 @@ public class AdminRestController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         assureIdConsistent(restaurant, id);
-        checkNotFoundWithId(restaurantRepository.save(restaurant), id);
+        dataService.updateRestaurant(restaurant);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        checkNotFoundWithId(restaurantRepository.delete(id) != 0, id);
+        dataService.deleteRestaurant(id);
     }
 
     @PostMapping(value = "/{id}/food", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ResponseEntity<Food> saveFood(@Valid @RequestBody Food food, @PathVariable int id) {
         checkNew(food);
-        Restaurant restaurant = checkNotFoundWithId(restaurantRepository.findById(id).orElse(null), id);
+        Food created = dataService.createFood(food, id);
 
-        food.setRestaurant(restaurant);
-        Food created = foodRepository.save(food);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .buildAndExpand(created.getId()).toUri();
 
@@ -73,11 +68,7 @@ public class AdminRestController {
     public ResponseEntity<Food> updateFood(@Valid @RequestBody Food food, @PathVariable int id, @PathVariable int foodId) {
         assureIdConsistent(food, foodId);
 
-        checkNotFoundWithId(foodRepository.getWithRestaurant(foodId).filter(food1 -> food1.getRestaurant().getId() == id).orElse(null), foodId);
-        Restaurant restaurant = restaurantRepository.getOne(id);
-        food.setRestaurant(restaurant);
-
-        checkNotFoundWithId(foodRepository.save(food), foodId);
+        dataService.updateFood(food, id);
 
         return ResponseEntity.noContent().build();
     }
@@ -85,7 +76,7 @@ public class AdminRestController {
     @DeleteMapping("/{id}/food/{foodId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteFood(@PathVariable int id, @PathVariable int foodId) {
-        checkNotFoundWithId(foodRepository.delete(id, foodId) != 0, foodId);
+        dataService.deleteFood(id, foodId);
     }
 
 }
